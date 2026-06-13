@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA World Cup Teams Showcase</title>
+    <style>
+        /* ===== CSS RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* ===== ANIMATED BACKGROUND ===== */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a2e 25%, #0a1a2e 50%, #0a0a3e 75%, #1a0a1e 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.9), rgba(0, 0, 100, 0.9));
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 20px;
+            gap: 20px;
+        }
+
+        .trophy-icon {
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        header p {
+            text-align: center;
+            font-size: 1.1rem;
+            padding-bottom: 10px;
+            color: #ccc;
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        nav button {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav button:hover,
+        nav button.active {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            border-color: #FFD700;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/><circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/><circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></svg>');
+        }
+
+        .hero h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #aaa;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ===== STATS BAR ===== */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 30px 20px;
+            background: rgba(255, 215, 0, 0.05);
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ===== SEARCH BAR ===== */
+        .search-container {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .search-container input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            border-color: #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .search-container input::placeholder {
+            color: #666;
+        }
+
+        /* ===== SECTION TITLES ===== */
+        .section-title {
+            text-align: center;
+            padding: 40px 20px 20px;
+            font-size: 1.8rem;
+            color: #FFD700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+            margin: 15px auto 0;
+        }
+
+        /* ===== TEAMS GRID ===== */
+        .teams-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== TEAM CARD ===== */
+        .team-card {
+            background: linear-gradient(145deg, rgba(20, 20, 40, 0.9), rgba(30, 30, 60, 0.9));
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--team-color, #FFD700);
+            transition: height 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px var(--team-glow, rgba(255, 215, 0, 0.2));
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .team-card:hover::before {
+            height: 6px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .flag {
+            font-size: 3rem;
+            line-height: 1;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .team-name-section {
+            flex: 1;
+        }
+
+        .team-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .team-confederation {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .team-ranking {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .team-ranking span {
+            display: block;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .team-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ddd;
+        }
+
+        .info-value.gold {
+            color: #FFD700;
+        }
+
+        /* Star Players */
+        .star-players {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .star-players-title {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .player-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .player-tag {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #FFD700;
+            transition: all 0.3s ease;
+        }
+
+        .player-tag:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* World Cup Titles */
+        .titles {
+            display: flex;
+            gap: 3px;
+            margin-top: 8px;
+            justify-content: center;
+        }
+
+        .trophy-star {
+            color: #FFD700;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* ===== GROUP HEADER ===== */
+        .group-header {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 40px 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            border-radius: 10px;
+            font-size: 1.3rem;
+            color: #FFD700;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        /* ===== PAST WINNERS SECTION ===== */
+        .winners-timeline {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 40px;
+        }
+
+        .winner-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border-left: 4px solid #FFD700;
+            transition: all 0.3s ease;
+        }
+
+        .winner-item:hover {
+            background: rgba(255, 215, 0, 0.08);
+            transform: translateX(10px);
+        }
+
+        .winner-year {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            min-width: 60px;
+        }
+
+        .winner-flag {
+            font-size: 2rem;
+        }
+
+        .winner-details {
+            flex: 1;
+        }
+
+        .winner-country {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .winner-host {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .winner-score {
+            font-size: 0.9rem;
+            color: #aaa;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 12px;
+            border-radius: 8px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            margin-top: 40px;
+        }
+
+        footer p {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        footer a {
+            color: #FFD700;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #FFA500;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: linear-gradient(145deg, #1a1a3e, #0a0a2e);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            position: relative;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+        }
+
+        .modal-close:hover {
+            color: #FFD700;
+        }
+
+        .modal h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+
+        .modal-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-stat-label {
+            color: #888;
+        }
+
+        .modal-stat-value {
+            font-weight: bold;
+            color: #ddd;
+        }
+
+        /* ===== SCROLL TO TOP ===== */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .scroll-top:hover {
+            transform: scale(1.1);
+        }
+
+        .scroll-top.visible {
+            display: flex;
+        }
+
+        /* ===== NO RESULTS ===== */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+                letter-spacing: 1px;
+            }
+
+            .hero h2 {
+                font-size: 1.4rem;
+            }
+
+            .teams-container {
+                grid-template-columns: 1fr;
+                padding: 20px 15px;
+            }
+
+            .group-header {
+                margin: 20px 15px 0;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            nav button {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+            }
+
+            .trophy-icon {
+                font-size: 2rem;
+            }
+
+            .winners-timeline {
+                padding: 20px 15px;
+            }
+
+            .winner-item {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-top {
+                flex-wrap: wrap;
+            }
+
+            header h1 {
+                font-size: 1.2rem;
+            }
+
+            .team-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== LOADING ANIMATION ===== */
+        .loading {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card appear animation */
+        .team-card {
+            opacity: 0;
+            animation: cardAppear 0.5s ease forwards;
+        }
+
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animation"></div>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="header-top">
+            <span class="trophy-icon">🏆</span>
+            <h1>FIFA World Cup</h1>
+            <span class="trophy-icon">⚽</span>
+        </div>
+        <p>The Greatest Show on Earth — Celebrating World Cup Teams & Legacy</p>
+        <nav id="filterNav">
+            <button class="active" onclick="filterTeams('all')">All Teams</button>
+            <button onclick="filterTeams('UEFA')">Europe</button>
+            <button onclick="filterTeams('CONMEBOL')">South America</button>
+            <button onclick="filterTeams('CONCACAF')">North America</button>
+            <button onclick="filterTeams('CAF')">Africa</button>
+            <button onclick="filterTeams('AFC')">Asia</button>
+            <button onclick="filterTeams('champions')">Champions 🏆</button>
+            <button onclick="showSection('winners')">History</button>
+        </nav>
+    </header>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="heroSection">
+        <h2>🌍 32 Nations. 1 Dream. Infinite Glory.</h2>
+        <p>Explore the teams that have graced the biggest stage in football. From 5-time champions Brazil to first-time qualifiers, every team has a story to tell.</p>
+    </section>
+
+    <!-- ===== STATS BAR ===== -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-number" id="statEditions">22</span>
+            <span class="stat-label">Editions</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">8</span>
+            <span class="stat-label">Winners</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">80+</span>
+            <span class="stat-label">Nations Qualified</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">1930</span>
+            <span class="stat-label">First Edition</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">2022</span>
+            <span class="stat-label">Latest Edition</span>
+        </div>
+    </div>
+
+    <!-- ===== SEARCH ===== -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="🔍 Search teams, players, confederations..." oninput="searchTeams()">
+    </div>
+
+    <!-- ===== TEAMS SECTION ===== -->
+    <h3 class="section-title" id="teamsTitle">World Cup Teams</h3>
+    <div class="no-results" id="noResults">
+        😕 No teams found. Try a different search.
+    </div>
+    <div class="teams-container" id="teamsContainer"></div>
+
+    <!-- ===== WINNERS HISTORY ===== -->
+    <div id="winnersSection" style="display:none;">
+        <h3 class="section-title">🏆 World Cup Winners History</h3>
+        <div class="winners-timeline" id="winnersTimeline"></div>
+    </div>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" id="modalContent">
+            <button class="modal-close" onclick="closeModalDirect()">✕</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- ===== SCROLL TO TOP ===== -->
+    <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>⚽ FIFA World Cup Teams Showcase ⚽</p>
+        <p style="font-size:0.85rem;">This is a fan-made informational website. Not affiliated with FIFA.</p>
+        <div class="footer-links">
+            <a href="#" onclick="filterTeams('all');return false;">Teams</a>
+            <a href="#" onclick="showSection('winners');return false;">History</a>
+            <a href="https://www.fifa.com" target="_blank" rel="noopener">FIFA Official</a>
+        </div>
+        <p style="margin-top:20px;font-size:0.8rem;color:#333;">© 2024 World Cup Showcase. Built with ❤️ for football fans.</p>
+    </footer>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ===== TEAM DATA =====
+        const teams = [
+            // SOUTH AMERICA (CONMEBOL)
+            {
+                name: "Brazil",
+                code: "BRA",
+                flag: "🇧🇷",
+                confederation: "CONMEBOL",
+                fifaRanking: 5,
+                titles: 5,
+                titleYears: "1958, 1962, 1970, 1994, 2002",
+                appearances: 22,
+                bestFinish: "Champions (5x)",
+                nickname: "Seleção Canarinho",
+                coach: "Dorival Júnior",
+                starPlayers: ["Vinícius Jr.", "Rodrygo", "Casemiro", "Alisson"],
+                teamColor: "#FFDF00",
+                glowColor: "rgba(255, 223, 0, 0.3)",
+                description: "The most successful nation in World Cup history with 5 titles."
+            },
+            {
+                name: "Argentina",
+                code: "ARG",
+                flag: "🇦🇷",
+                confederation: "CONMEBOL",
+                fifaRanking: 1,
+                titles: 3,
+                titleYears: "1978, 1986, 2022",
+                appearances: 18,
+                bestFinish: "Champions (3x)",
+                nickname: "La Albiceleste",
+                coach: "Lionel Scaloni",
+                starPlayers: ["Lionel Messi", "Julián Álvarez", "E. Martínez", "Di María"],
+                teamColor: "#75AADB",
+                glowColor: "rgba(117, 170, 219, 0.3)",
+                description: "Reigning World Cup champions after their 2022 triumph in Qatar."
+            },
+            {
+                name: "Uruguay",
+                code: "URU",
+                flag: "🇺🇾",
+                confederation: "CONMEBOL",
+                fifaRanking: 14,
+                titles: 2,
+                titleYears: "1930, 1950",
+                appearances: 14,
+                bestFinish: "Champions (2x)",
+                nickname: "La Celeste",
+                coach: "Marcelo Bielsa",
+                starPlayers: ["Darwin Núñez", "F. Valverde", "R. Bentancur"],
+                teamColor: "#0038A8",
+                glowColor: "rgba(0, 56, 168, 0.3)",
+                description: "Winners of the first-ever World Cup in 1930."
+            },
+            {
+                name: "Colombia",
+                code: "COL",
+                flag: "🇨🇴",
+                confederation: "CONMEBOL",
+                fifaRanking: 12,
+                titles: 0,
+                titleYears: "—",
+                appearances: 6,
+                bestFinish: "Quarter-finals (2014)",
+                nickname: "Los Cafeteros",
+                coach: "Néstor Lorenzo",
+                starPlayers: ["Luis Díaz", "James Rodríguez", "R. Arias"],
+                teamColor: "#FCD116",
+                glowColor: "rgba(252, 209, 22, 0.3)",
+                description: "A team known for flair and passionate support."
+            },
+
+            // EUROPE (UEFA)
+            {
+                name: "Germany",
+                code: "GER",
+                flag: "🇩🇪",
+                confederation: "UEFA",
+                fifaRanking: 13,
+                titles: 4,
+                titleYears: "1954, 1974, 1990, 2014",
+                appearances: 20,
+                bestFinish: "Champions (4x)",
+                nickname: "Die Mannschaft",
+                coach: "Julian Nagelsmann",
+                starPlayers: ["Jamal Musiala", "F. Wirtz", "Kai Havertz", "Toni Kroos"],
+                teamColor: "#000000",
+                glowColor: "rgba(255, 255, 255, 0.2)",
+                description: "A powerhouse of consistency with 4 World Cup titles."
+            },
+            {
+                name: "Italy",
+                code: "ITA",
+                flag: "🇮🇹",
+                confederation: "UEFA",
+                fifaRanking: 9,
+                titles: 4,
+                titleYears: "1934, 1938, 1982, 2006",
+                appearances: 18,
+                bestFinish: "Champions (4x)",
+                nickname: "Gli Azzurri",
+                coach: "Luciano Spalletti",
+                starPlayers: ["Donnarumma", "Barella", "Chiesa", "Bastoni"],
+                teamColor: "#0066CC",
+                glowColor: "rgba(0, 102, 204, 0.3)",
+                description: "Four-time world champions known for their defensive mastery."
+            },
+            {
+                name: "France",
+                code: "FRA",
+                flag: "🇫🇷",
+                confederation: "UEFA",
+                fifaRanking: 2,
+                titles: 2,
+                titleYears: "1998, 2018",
+                appearances: 16,
+                bestFinish: "Champions (2x)",
+                nickname: "Les Bleus",
+                coach: "Didier Deschamps",
+                starPlayers: ["Kylian Mbappé", "A. Griezmann", "O. Dembélé"],
+                teamColor: "#002395",
+                glowColor: "rgba(0, 35, 149, 0.3)",
+                description: "2018 champions and 2022 runners-up with incredible depth."
+            },
+            {
+                name: "Spain",
+                code: "ESP",
+                flag: "🇪🇸",
+                confederation: "UEFA",
+                fifaRanking: 3,
+                titles: 1,
+                titleYears: "2010",
+                appearances: 16,
+                bestFinish: "Champions (2010)",
+                nickname: "La Roja",
+                coach: "Luis de la Fuente",
+                starPlayers: ["Lamine Yamal", "Pedri", "Rodri", "Gavi"],
+                teamColor: "#AA151B",
+                glowColor: "rgba(170, 21, 27, 0.3)",
+                description: "Masters of tiki-taka, 2010 World Cup champions."
+            },
+            {
+                name: "England",
+                code: "ENG",
+                flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+                confederation: "UEFA",
+                fifaRanking: 4,
+                titles: 1,
+                titleYears: "1966",
+                appearances: 16,
+                bestFinish: "Champions (1966)",
+                nickname: "Three Lions",
+                coach: "Thomas Tuchel",
+                starPlayers: ["Jude Bellingham", "H. Kane", "B. Saka", "P. Foden"],
+                teamColor: "#FFFFFF",
+                glowColor: "rgba(255, 255, 255, 0.2)",
+                description: "The birthplace of football, champions in 1966."
+            },
+            {
+                name: "Netherlands",
+                code: "NED",
+                flag: "🇳🇱",
+                confederation: "UEFA",
+                fifaRanking: 7,
+                titles: 0,
+                titleYears: "—",
+                appearances: 11,
+                bestFinish: "Runners-up (1974, 1978, 2010)",
+                nickname: "Oranje",
+                coach: "Ronald Koeman",
+                starPlayers: ["V. van Dijk", "C. Gakpo", "F. de Jong"],
+                teamColor: "#FF6600",
+                glowColor: "rgba(255, 102, 0, 0.3)",
+                description: "Famous for Total Football, 3-time runners-up."
+            },
+            {
+                name: "Portugal",
+                code: "POR",
+                flag: "🇵🇹",
+                confederation: "UEFA",
+                fifaRanking: 6,
+                titles: 0,
+                titleYears: "—",
+                appearances: 8,
+                bestFinish: "3rd Place (1966, 2006)",
+                nickname: "Seleção das Quinas",
+                coach: "Roberto Martínez",
+                starPlayers: ["Cristiano Ronaldo", "B. Silva", "B. Fernandes", "R. Leão"],
+                teamColor: "#006600",
+                glowColor: "rgba(0, 102, 0, 0.3)",
+                description: "Led by Cristiano Ronaldo, always a contender."
+            },
+            {
+                name: "Belgium",
+                code: "BEL",
+                flag: "🇧🇪",
+                confederation: "UEFA",
+                fifaRanking: 8,
+                titles: 0,
+                titleYears: "—",
+                appearances: 14,
+                bestFinish: "3rd Place (2018)",
+                nickname: "Red Devils",
+                coach: "Domenico Tedesco",
+                starPlayers: ["K. De Bruyne", "R. Lukaku", "J. Doku"],
+                teamColor: "#EE2436",
+                glowColor: "rgba(238, 36, 54, 0.3)",
+                description: "Golden generation with a 3rd place finish in 2018."
+            },
+            {
+                name: "Croatia",
+                code: "CRO",
+                flag: "🇭🇷",
+                confederation: "UEFA",
+                fifaRanking: 10,
+                titles: 0,
+                titleYears: "—",
+                appearances: 6,
+                bestFinish: "Runners-up (2018)",
+                nickname: "Vatreni",
+                coach: "Zlatko Dalić",
+                starPlayers: ["Luka Modrić", "M. Kovačić", "J. Gvardiol"],
+                teamColor: "#FF0000",
+                glowColor: "rgba(255, 0, 0, 0.3)",
+                description: "Small nation with a giant heart, 2018 finalists."
+            },
+            {
+                name: "Switzerland",
+                code: "SUI",
+                flag: "🇨🇭",
+                confederation: "UEFA",
+                fifaRanking: 19,
+                titles: 0,
+                titleYears: "—",
+                appearances: 12,
+                bestFinish: "Quarter-finals (1934, 1938, 1954)",
+                nickname: "Nati",
+                coach: "Murat Yakin",
+                starPlayers: ["G. Xhaka", "M. Akanji", "X. Shaqiri"],
+                teamColor: "#FF0000",
+                glowColor: "rgba(255, 0, 0, 0.2)",
+                description: "Consistent qualifiers and tough to beat."
+            },
+            {
+                name: "Denmark",
+                code: "DEN",
+                flag: "🇩🇰",
+                confederation: "UEFA",
+                fifaRanking: 21,
+                titles: 0,
+                titleYears: "—",
+                appearances: 6,
+                bestFinish: "Quarter-finals (1998)",
+                nickname: "Danish Dynamite",
+                coach: "Kasper Hjulmand",
+                starPlayers: ["C. Eriksen", "R. Højlund", "P. Højbjerg"],
+                teamColor: "#C8102E",
+                glowColor: "rgba(200, 16, 46, 0.3)",
+                description: "A resilient team with a rich footballing tradition."
+            },
+            {
+                name: "Poland",
+                code: "POL",
+                flag: "🇵🇱",
+                confederation: "UEFA",
+                fifaRanking: 28,
+                titles: 0,
+                titleYears: "—",
+                appearances: 9,
+                bestFinish: "3rd Place (1974, 1982)",
+                nickname: "Biało-czerwoni",
+                coach: "Michał Probierz",
+                starPlayers: ["R. Lewandowski", "P. Zieliński", "W. Szczęsny"],
+                teamColor: "#DC143C",
+                glowColor: "rgba(220, 20, 60, 0.3)",
+                description: "Powered by Robert Lewandowski, one of the greatest strikers."
+            },
+            {
+                name: "Serbia",
+                code: "SRB",
+                flag: "🇷🇸",
+                confederation: "UEFA",
+                fifaRanking: 33,
+                titles: 0,
+                titleYears: "—",
+                appearances: 3,
+                bestFinish: "Group Stage",
+                nickname: "Orlovi",
+                coach: "Dragan Stojković",
+                starPlayers: ["D. Vlahović", "A. Mitrović", "S. Milinković-Savić"],
+                teamColor: "#C6363C",
+                glowColor: "rgba(198, 54, 60, 0.3)",
+                description: "Talented squad with a rich Yugoslavian footballing heritage."
+            },
+
+            // NORTH AMERICA (CONCACAF)
+            {
+                name: "Mexico",
+                code: "MEX",
+                flag: "🇲🇽",
+                confederation: "CONCACAF",
+                fifaRanking: 15,
+                titles: 0,
+                titleYears: "—",
+                appearances: 17,
+                bestFinish: "Quarter-finals (1970, 1986)",
+                nickname: "El Tri",
+                coach: "Jaime Lozano",
+                starPlayers: ["Hirving Lozano", "E. Álvarez", "R. Jiménez"],
+                teamColor: "#006847",
+                glowColor: "rgba(0, 104, 71, 0.3)",
+                description: "CONCACAF's most successful World Cup team."
+            },
+            {
+                name: "United States",
+                code: "USA",
+                flag: "🇺🇸",
+                confederation: "CONCACAF",
+                fifaRanking: 11,
+                titles: 0,
+                titleYears: "—",
+                appearances: 11,
+                bestFinish: "3rd Place (1930)",
+                nickname: "USMNT",
+                coach: "Gregg Berhalter",
+                starPlayers: ["C. Pulisic", "G. Reyna", "T. Adams", "W. McKennie"],
+                teamColor: "#002868",
+                glowColor: "rgba(0, 40, 104, 0.3)",
+                description: "Co-hosting 2026 World Cup. Rising talent pool."
+            },
+            {
+                name: "Canada",
+                code: "CAN",
+                flag: "🇨🇦",
+                confederation: "CONCACAF",
+                fifaRanking: 43,
+                titles: 0,
+                titleYears: "—",
+                appearances: 2,
+                bestFinish: "Group Stage (1986, 2022)",
+                nickname: "CanMNT",
+                coach: "Jesse Marsch",
+                starPlayers: ["Alphonso Davies", "J. David", "T. Buchanan"],
+                teamColor: "#FF0000",
+                glowColor: "rgba(255, 0, 0, 0.2)",
+                description: "Co-hosts for 2026, returned to World Cup in 2022 after 36 years."
+            },
+            {
+                name: "Costa Rica",
+                code: "CRC",
+                flag: "🇨🇷",
+                confederation: "CONCACAF",
+                fifaRanking: 52,
+                titles: 0,
+                titleYears: "—",
+                appearances: 6,
+                bestFinish: "Quarter-finals (2014)",
+                nickname: "Los Ticos",
+                coach: "Gustavo Alfaro",
+                starPlayers: ["K. Navas", "J. Campbell", "B. Oviedo"],
+                teamColor: "#002B7F",
+                glowColor: "rgba(0, 43, 127, 0.3)",
+                description: "Stunned the world by reaching QF in 2014."
+            },
+
+            // AFRICA (CAF)
+            {
+                name: "Morocco",
+                code: "MAR",
+                flag: "🇲🇦",
+                confederation: "CAF",
+                fifaRanking: 13,
+                titles: 0,
+                titleYears: "—",
+                appearances: 6,
+                bestFinish: "Semi-finals (2022)",
+                nickname: "Atlas Lions",
+                coach: "Walid Regragui",
+                starPlayers: ["A. Hakimi", "H. Ziyech", "Y. En-Nesyri", "S. Amrabat"],
+                teamColor: "#C1272D",
+                glowColor: "rgba(193, 39, 45, 0.3)",
+                description: "First African & Arab team to reach a World Cup semi-final (2022)."
+            },
+            {
+                name: "Senegal",
+                code: "SEN",
+                flag: "🇸🇳",
+                confederation: "CAF",
+                fifaRanking: 17,
+                titles: 0,
+                titleYears: "—",
+                appearances: 3,
+                bestFinish: "Quarter-finals (2002)",
+                nickname: "Lions of Teranga",
+                coach: "Aliou Cissé",
+                starPlayers: ["S. Mané", "K. Koulibaly", "I. Gueye"],
+                teamColor: "#009639",
+                glowColor: "rgba(0, 150, 57, 0.3)",
+                description: "AFCON champions and 2002 World Cup quarter-finalists."
+            },
+            {
+                name: "Cameroon",
+                code: "CMR",
+                flag: "🇨🇲",
+                confederation: "CAF",
+                fifaRanking: 47,
+                titles: 0,
+                titleYears: "—",
+                appearances: 8,
+                bestFinish: "Quarter-finals (1990)",
+                nickname: "Indomitable Lions",
+                coach: "Rigobert Song",
+                starPlayers: ["A. Onana", "E. Choupo-Moting", "C. Mbeumo"],
+                teamColor: "#007A33",
+                glowColor: "rgba(0, 122, 51, 0.3)",
+                description: "Africa's most experienced World Cup nation."
+            },
+            {
+                name: "Ghana",
+                code: "GHA",
+                flag: "🇬🇭",
+                confederation: "CAF",
+                fifaRanking: 60,
+                titles: 0,
+                titleYears: "—",
+                appearances: 4,
+                bestFinish: "Quarter-finals (2010)",
+                nickname: "Black Stars",
+                coach: "Chris Hughton",
+                starPlayers: ["M. Kudus", "T. Partey", "I. Williams"],
+                teamColor: "#FFD700",
+                glowColor: "rgba(255, 215, 0, 0.3)",
+                description: "Came agonizingly close to semi-finals in 2010."
+            },
+            {
+                name: "Nigeria",
+                code: "NGA",
+                flag: "🇳🇬",
+                confederation: "CAF",
+                fifaRanking: 30,
+                titles: 0,
+                titleYears: "—",
+                appearances: 7,
+                bestFinish: "Round of 16 (1994, 1998, 2014)",
+                nickname: "Super Eagles",
+                coach: "Finidi George",
+                starPlayers: ["V. Osimhen", "W. Ndidi", "S. Chukwueze"],
+                teamColor: "#008751",
+                glowColor: "rgba(0, 135, 81, 0.3)",
+                description: "Always entertaining with explosive attacking talent."
+            },
+
+            // ASIA (AFC)
+            {
+                name: "Japan",
+                code: "JPN",
+                flag: "🇯🇵",
+                confederation: "AFC",
+                fifaRanking: 18,
+                titles: 0,
+                titleYears: "—",
+                appearances: 7,
+                bestFinish: "Round of 16 (2002, 2010, 2018, 2022)",
+                nickname: "Samurai Blue",
+                coach: "Hajime Moriyasu",
+                starPlayers: ["T. Kubo", "K. Mitoma", "W. Endo", "D. Kamada"],
+                teamColor: "#002395",
+                glowColor: "rgba(0, 35, 149, 0.3)",
+                description: "Asia's most consistent World Cup performers. Beat Spain & Germany in 2022."
+            },
+            {
+                name: "South Korea",
+                code: "KOR",
+                flag: "🇰🇷",
+                confederation: "AFC",
+                fifaRanking: 23,
+                titles: 0,
+                titleYears: "—",
+                appearances: 11,
+                bestFinish: "Semi-finals (2002)",
+                nickname: "Taegeuk Warriors",
+                coach: "Hong Myung-bo",
+                starPlayers: ["Son Heung-min", "Kim Min-jae", "Hwang Hee-chan"],
+                teamColor: "#C60C30",
+                glowColor: "rgba(198, 12, 48, 0.3)",
+                description: "Made history reaching the semi-finals as co-hosts in 2002."
+            },
+            {
+                name: "Saudi Arabia",
+                code: "KSA",
+                flag: "🇸🇦",
+                confederation: "AFC",
+                fifaRanking: 56,
+                titles: 0,
+                titleYears: "—",
+                appearances: 7,
+                bestFinish: "Round of 16 (1994)",
+                nickname: "Green Falcons",
+                coach: "Roberto Mancini",
+                starPlayers: ["Salem Al-Dawsari", "S. Al-Shehri", "M. Kanno"],
+                teamColor: "#006C35",
+                glowColor: "rgba(0, 108, 53, 0.3)",
+                description: "Shocked the world by beating Argentina in Qatar 2022."
+            },
+            {
+                name: "Australia",
+                code: "AUS",
+                flag: "🇦🇺",
+                confederation: "AFC",
+                fifaRanking: 24,
+                titles: 0,
+                titleYears: "—",
+                appearances: 6,
+                bestFinish: "Round of 16 (2006, 2022)",
+                nickname: "Socceroos",
+                coach: "Graham Arnold",
+                starPlayers: ["M. Leckie", "A. Hrustic", "J. Irvine"],
+                teamColor: "#00843D",
+                glowColor: "rgba(0, 132, 61, 0.3)",
+                description: "Reached the Round of 16 in 2022 for the second time."
+            }
+        ];
+
+        // ===== WORLD CUP WINNERS =====
+        const winners = [
+            { year: 2022, country: "Argentina", flag: "🇦🇷", host: "Qatar", score: "3-3 (4-2 pen) vs France" },
+            { year: 2018, country: "France", flag: "🇫🇷", host: "Russia", score: "4-2 vs Croatia" },
+            { year: 2014, country: "Germany", flag: "🇩🇪", host: "Brazil", score: "1-0 vs Argentina (AET)" },
+            { year: 2010, country: "Spain", flag: "🇪🇸", host: "South Africa", score: "1-0 vs Netherlands (AET)" },
+            { year: 2006, country: "Italy", flag: "🇮🇹", host: "Germany", score: "1-1 (5-3 pen) vs France" },
+            { year: 2002, country: "Brazil", flag: "🇧🇷", host: "South Korea/Japan", score: "2-0 vs Germany" },
+            { year: 1998, country: "France", flag: "🇫🇷", host: "France", score: "3-0 vs Brazil" },
+            { year: 1994, country: "Brazil", flag: "🇧🇷", host: "United States", score: "0-0 (3-2 pen) vs Italy" },
+            { year: 1990, country: "Germany", flag: "🇩🇪", host: "Italy", score: "1-0 vs Argentina" },
+            { year: 1986, country: "Argentina", flag: "🇦🇷", host: "Mexico", score: "3-2 vs West Germany" },
+            { year: 1982, country: "Italy", flag: "🇮🇹", host: "Spain", score: "3-1 vs West Germany" },
+            { year: 1978, country: "Argentina", flag: "🇦🇷", host: "Argentina", score: "3-1 vs Netherlands (AET)" },
+            { year: 1974, country: "Germany", flag: "🇩🇪", host: "West Germany", score: "2-1 vs Netherlands" },
+            { year: 1970, country: "Brazil", flag: "🇧🇷", host: "Mexico", score: "4-1 vs Italy" },
+            { year: 1966, country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", host: "England", score: "4-2 vs West Germany (AET)" },
+            { year: 1962, country: "Brazil", flag: "🇧🇷", host: "Chile", score: "3-1 vs Czechoslovakia" },
+            { year: 1958, country: "Brazil", flag: "🇧🇷", host: "Sweden", score: "5-2 vs Sweden" },
+            { year: 1954, country: "Germany", flag: "🇩🇪", host: "Switzerland", score: "3-2 vs Hungary" },
+            { year: 1950, country: "Uruguay", flag: "🇺🇾", host: "Brazil", score: "2-1 vs Brazil" },
+            { year: 1938, country: "Italy", flag: "🇮🇹", host: "France", score: "4-2 vs Hungary" },
+            { year: 1934, country: "Italy", flag: "🇮🇹", host: "Italy", score: "2-1 vs Czechoslovakia (AET)" },
+            { year: 1930, country: "Uruguay", flag: "🇺🇾", host: "Uruguay", score: "4-2 vs Argentina" }
+        ];
+
+        // ===== RENDER TEAMS =====
+        function renderTeams(teamList) {
+            const container = document.getElementById('teamsContainer');
+            container.innerHTML = '';
+
+            if (teamList.length === 0) {
+                document.getElementById('noResults').style.display = 'block';
+                return;
+            }
+            document.getElementById('noResults').style.display = 'none';
+
+            teamList.forEach((team, index) => {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.style.setProperty('--team-color', team.teamColor);
+                card.style.setProperty('--team-glow', team.glowColor);
+                card.style.animationDelay = `${index * 0.05}s`;
+                card.onclick = () => openModal(team);
+
+                let trophyStars = '';
+                for (let i = 0; i < team.titles; i++) {
+                    trophyStars += '<span class="trophy-star">⭐</span>';
+                }
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="flag">${team.flag}</span>
+                        <div class="team-name-section">
+                            <div class="team-name">${team.name}</div>
+                            <div class="team-confederation">${team.confederation}</div>
+                            ${trophyStars ? `<div class="titles">${trophyStars}</div>` : ''}
+                        </div>
+                        <div class="team-ranking">
+                            #${team.fifaRanking}
+                            <span>FIFA</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="team-info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Titles</div>
+                                <div class="info-value ${team.titles > 0 ? 'gold' : ''}">${team.titles > 0 ? '🏆 ' + team.titles : '—'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Appearances</div>
+                                <div class="info-value">${team.appearances}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Best Finish</div>
+                                <div class="info-value" style="font-size:0.8rem">${team.bestFinish}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Nickname</div>
+                                <div class="info-value" style="font-size:0.8rem">${team.nickname}</div>
+                            </div>
+                        </div>
+                        <div class="star-players">
+                            <div class="star-players-title">⭐ Key Players</div>
+                            <div class="player-tags">
+                                ${team.starPlayers.map(p => `<span class="player-tag">${p}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ===== RENDER WINNERS =====
+        function renderWinners() {
+            const timeline = document.getElementById('winnersTimeline');
+            timeline.innerHTML = '';
+
+            winners.forEach(w => {
+                const item = document.createElement('div');
+                item.className = 'winner-item';
+                item.innerHTML = `
+                    <span class="winner-year">${w.year}</span>
+                    <span class="winner-flag">${w.flag}</span>
+                    <div class="winner-details">
+                        <div class="winner-country">${w.country}</div>
+                        <div class="winner-host">📍 Host: ${w.host}</div>
+                    </div>
+                    <span class="winner-score">${w.score}</span>
+                `;
+                timeline.appendChild(item);
+            });
+        }
+
+        // ===== FILTER =====
+        function filterTeams(filter) {
+            document.getElementById('winnersSection').style.display = 'none';
+            document.getElementById('teamsContainer').style.display = 'grid';
+            document.getElementById('heroSection').style.display = 'block';
+            document.getElementById('teamsTitle').style.display = 'block';
+            document.getElementById('searchInput').value = '';
+
+            // Update active button
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let filtered;
+            if (filter === 'all') {
+                filtered = teams;
+            } else if (filter === 'champions') {
+                filtered = teams.filter(t => t.titles > 0);
+            } else {
+                filtered = teams.filter(t => t.confederation === filter);
+            }
+
+            renderTeams(filtered);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== SEARCH =====
+        function searchTeams() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                renderTeams(teams);
+                return;
+            }
+
+            const filtered = teams.filter(t =>
+                t.name.toLowerCase().includes(query) ||
+                t.nickname.toLowerCase().includes(query) ||
+                t.confederation.toLowerCase().includes(query) ||
+                t.coach.toLowerCase().includes(query) ||
+                t.starPlayers.some(p => p.toLowerCase().includes(query)) ||
+                t.description.toLowerCase().includes(query)
+            );
+
+            renderTeams(filtered);
+        }
+
+        // ===== SHOW WINNERS SECTION =====
+        function showSection(section) {
+            if (section === 'winners') {
+                document.getElementById('winnersSection').style.display = 'block';
+                document.getElementById('teamsContainer').style.display = 'none';
+                document.getElementById('heroSection').style.display = 'none';
+                document.getElementById('teamsTitle').style.display = 'none';
+                document.getElementById('noResults').style.display = 'none';
+                renderWinners();
+
+                document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+                event.target.classList.add('active');
+
+                document.getElementById('winnersSection').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // ===== MODAL =====
+        function openModal(team) {
+            const modal = document.getElementById('modalBody');
+            let trophyStars = '';
+            for (let i = 0; i < team.titles; i++) {
+                trophyStars += '⭐';
+            }
+
+            modal.innerHTML = `
+                <div style="text-align:center;margin-bottom:20px;">
+                    <span style="font-size:5rem;">${team.flag}</span>
+                    <h2 style="color:#FFD700;margin-top:10px;">${team.name}</h2>
+                    <p style="color:#888;font-style:italic;">"${team.nickname}"</p>
+                    ${trophyStars ? `<p style="font-size:1.5rem;margin-top:5px;">${trophyStars}</p>` : ''}
+                </div>
+                <p style="text-align:center;color:#aaa;margin-bottom:25px;line-height:1.6;">${team.description}</p>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">FIFA Ranking</span>
+                    <span class="modal-stat-value">#${team.fifaRanking}</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Confederation</span>
+                    <span class="modal-stat-value">${team.confederation}</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">World Cup Titles</span>
+                    <span class="modal-stat-value" style="color:${team.titles > 0 ? '#FFD700' : '#ddd'}">${team.titles > 0 ? team.titles + ' 🏆' : 'None'}</span>
+                </div>
+                ${team.titles > 0 ? `
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Title Years</span>
+                    <span class="modal-stat-value" style="color:#FFD700">${team.titleYears}</span>
+                </div>` : ''}
+                <div class="modal-stat">
+                    <span class="modal-stat-label">WC Appearances</span>
+                    <span class="modal-stat-value">${team.appearances}</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Best Finish</span>
+                    <span class="modal-stat-value">${team.bestFinish}</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Coach</span>
+                    <span class="modal-stat-value">${team.coach}</span>
+                </div>
+                <div style="margin-top:20px;">
+                    <p style="color:#666;font-size:0.8rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">⭐ Star Players</p>
+                    <div class="player-tags" style="display:flex;flex-wrap:wrap;gap:8px;">
+                        ${team.starPlayers.map(p => `<span class="player-tag">${p}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(e) {
+            if (e.target === document.getElementById('modalOverlay')) {
+                closeModalDirect();
+            }
+        }
+
+        function closeModalDirect() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModalDirect();
+        });
+
+        // ===== SCROLL TO TOP BUTTON =====
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTop');
+            if (window.scrollY > 300) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        });
+
+        // ===== COUNTER ANIMATION =====
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent);
+                if (isNaN(target)) return;
+                let current = 0;
+                const increment = Math.ceil(target / 50);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    counter.textContent = current;
+                }, 30);
+            });
+        }
+
+        // ===== INITIALIZE =====
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTeams(teams);
+            animateCounters();
+        });
+    </script>
+</body>
+</html>
